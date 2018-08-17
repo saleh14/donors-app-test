@@ -34,10 +34,8 @@ exports.handler = (event, context, callback) => {
     .query(q.Create(q.Ref('classes/donors'), { data: newUser }))
     .then(response => {
       console.log(response)
-      callback(null, { statusCode: 200 })
     })
     .catch(e => {
       console.log(e)
-      callback(null, { status: 500, body: `Error: ${e}` })
     })
 }
