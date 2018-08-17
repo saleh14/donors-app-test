@@ -8,6 +8,8 @@ const client = new faunadb.Client({
 
 /* export our lambda function as named "handler" export */
 exports.handler = (event, context, callback) => {
+  console.dir(context)
+  console.dir(event.body)
   const claims = context.clientContext && context.clientContext.user
   if (!claims) {
     return
