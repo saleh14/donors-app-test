@@ -10,15 +10,27 @@ const client = new faunadb.Client({
 exports.handler = (event, context, callback) => {
   console.log(context)
   console.log(event, event.body)
-  const claims = context.clientContext && context.clientContext.user
-  if (!claims) {
+  const { user } = event.body
+
+  if (!user) {
+    console.log('Error: user is undefined')
+    return
+  }
+  const { email, created_at, user_metadata } = user
+  const { full_name } = user_metadata
+
+  if (!email) {
+    console.log('Error: email is undefined')
     return
   }
 
+  const newUser = {
+    loginEmail: email,
+    full_name,
+    created_at
+  }
   client
-    .query(
-      q.Create(q.Ref('classes/donors'), { data: { loginEmail: claims.email } })
-    )
+    .query(q.Create(q.Ref('classes/donors'), { data: newUser }))
     .then(response => {
       console.log(response)
       callback(null, { statusCode: 200 })
