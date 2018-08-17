@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { css } from 'emotion'
+import netlifyIdentity from 'netlify-identity-widget'
 import Form from './components/Form/'
 
 const appCss = css`
@@ -29,6 +30,12 @@ class App extends Component {
       .catch(e => {
         console.log(e)
       })
+  }
+  componentDidMount () {
+    netlifyIdentity.init()
+    setTimeout(() => {
+      netlifyIdentity.open()
+    }, 1000)
   }
   render () {
     return (
