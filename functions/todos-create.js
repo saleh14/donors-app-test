@@ -10,21 +10,34 @@ const client = new faunadb.Client({
 exports.handler = (event, context, callback) => {
   /* parse the string body into a useable JS object */
   console.log(context, '************\n\n')
+  console.log(event, '************\n\n', event.body)
   const data = JSON.parse(event.body)
   console.log('Function `todo-create` invoked', data)
-  const todoItem = {
-    data: data
-  }
+  const donors_info = { data }
   /* construct the fauna query */
   return client
-    .query(q.Create(q.Ref('classes/donors'), todoItem))
+    .query(
+      q.Paginate(
+        q.Match(
+          q.Ref('indexes/get_unique_by_login_email'),
+          'saleh.mearaj@gmail.com'
+        )
+      )
+    )
     .then(response => {
       console.log('success', response)
       /* Success! return the response with statusCode 200 */
-      return callback(null, {
-        statusCode: 200,
-        body: JSON.stringify(response)
-      })
+      console.log(response.body, `******* \n ${response.data}`)
+      const refID = `${response.data}`.split('/').pop()
+
+      return client
+        .query(q.Update(q.Ref(`classes/donors/${refID}`), donors_info))
+        .then(response => {
+          return callback(null, {
+            statusCode: 200,
+            body: JSON.stringify(response)
+          })
+        })
     })
     .catch(error => {
       console.log('error', error)

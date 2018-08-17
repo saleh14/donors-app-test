@@ -36,6 +36,7 @@ class App extends Component {
     setTimeout(() => {
       netlifyIdentity.open()
     }, 1000)
+    netlifyIdentity.on('login', user => console.log(user))
   }
   render () {
     return (
