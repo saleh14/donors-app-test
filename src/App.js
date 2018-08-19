@@ -12,24 +12,38 @@ const appCss = css`
 class App extends Component {
   state = {}
 
+  generateHeaders () {
+    const headers = { 'Content-Type': 'application/json' }
+    if (netlifyIdentity.currentUser()) {
+      return netlifyIdentity.currentUser().jwt().then(token => {
+        return { ...headers, Authorization: `Bearer ${token}` }
+      })
+    }
+    return Promise.resolve(headers)
+  }
+
   handleSubmit = (event, fields) => {
     event.preventDefault()
     console.log(fields)
-    fetch('/.netlify/functions/todos-create', {
-      body: JSON.stringify(fields),
-      method: 'POST'
+
+    this.generateHeaders().then(headers => {
+      fetch('/.netlify/functions/donors-update', {
+        body: JSON.stringify(fields),
+        headers,
+        method: 'POST'
+      })
+        .then(response => {
+          if (!response.ok) {
+            console.log('aww, not ok')
+            return
+          }
+          return response.json()
+        })
+        .then(data => console.log(data))
+        .catch(e => {
+          console.log(e)
+        })
     })
-      .then(response => {
-        if (!response.ok) {
-          console.log('aww, not ok')
-          return
-        }
-        return response.json()
-      })
-      .then(data => console.log(data))
-      .catch(e => {
-        console.log(e)
-      })
   }
   componentDidMount () {
     netlifyIdentity.init()

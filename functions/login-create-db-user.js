@@ -22,11 +22,11 @@ exports.handler = (event, context, callback) => {
     return
   }
 
-  const { faundb_ref } = user.app_metadata
+  const { faunadb_ref } = user.app_metadata
 
-  if (faundb_ref) {
+  if (faunadb_ref) {
     console.log('user is already created in faunadb')
-    callback({ stateCode: 204 })
+    callback(null, { stateCode: 204 })
   } else {
     const { id, email, created_at } = user
     const { full_name } = user.user_metadata
@@ -78,7 +78,7 @@ function updateUser ({ identity, user }, ref) {
   const userID = user.sub
   const userUrl = `${identity.url}/admin/users/${userID}`
   const adminAuthHeader = 'Bearer ' + identity.token
-  const updated_app_metadata = { ...user.app_metadata, faundb_ref: ref }
+  const updated_app_metadata = { ...user.app_metadata, faunadb_ref: ref }
 
   try {
     return fetch(userUrl, {
