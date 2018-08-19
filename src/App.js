@@ -70,6 +70,7 @@ class App extends Component {
           console.log(e)
         })
       if (user.app_metadata && user.app_metadata.faunadb_ref) {
+        const { faunadb_ref } = user.app_metadata
         fetch(`/.netlify/functions/donors-read/${faunadb_ref}`, {
           headers: { Authorization: myAuthHeader }
         })
