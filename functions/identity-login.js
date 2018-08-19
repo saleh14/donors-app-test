@@ -45,11 +45,11 @@ exports.handler = (event, context) => {
         console.log(response.ref.toString().match(/[0-9]+/)[0])
         const refID = ''
         try {
-          console.log(response.ref())
           refID = `${response.ref}`.split('/').pop()
           console.log('ref: ', refID)
         } catch (e) {
           console.log('Error unable to get ref')
+          console.log(e)
         }
       })
       .catch(e => {
