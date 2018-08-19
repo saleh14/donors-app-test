@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
 import faunadb from 'faunadb' /* Import faunaDB sdk */
-import { SSL_OP_NETSCAPE_CA_DN_BUG } from 'constants'
 
 /* configure faunaDB Client with our secret */
 const q = faunadb.query
