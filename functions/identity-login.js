@@ -41,12 +41,12 @@ exports.handler = (event, context) => {
         console.log('data: ', response.data)
         console.log('ref: ', response.ref)
         console.log(JSON.stringify(response.ref, null, 2))
-        console.log(response.ref.toString())
-        console.log(response.ref.toString().match(/[0-9]+/)[0])
-        const refID = ''
         try {
-          refID = `${response.ref}`.split('/').pop()
-          console.log('ref: ', refID)
+          const refID = `${response.ref}`.split('/').pop()
+          console.log(refID)
+          if (context.clientContext) {
+            updateUser(context.clientContext, refID)
+          }
         } catch (e) {
           console.log('Error unable to get ref')
           console.log(e)
