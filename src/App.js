@@ -38,7 +38,9 @@ class App extends Component {
     }, 1000)
     netlifyIdentity.on('login', user => {
       console.log(user)
+      const myAuthHeader = `Bearer ${user.token.access_token}`
       fetch('/.netlify/functions/login-create-db-user', {
+        headers: { Authorization: myAuthHeader },
         body: {},
         method: 'POST'
       })
