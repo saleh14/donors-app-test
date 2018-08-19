@@ -45,6 +45,7 @@ exports.handler = (event, context) => {
           const refID = `${response.ref}`.split('/').pop()
           console.log(refID)
           if (context.clientContext) {
+            console.log(JSON.stringify(context.clientContext, null, 2))
             updateUser(context.clientContext, refID)
           }
         } catch (e) {
@@ -59,6 +60,8 @@ exports.handler = (event, context) => {
 }
 
 function updateUser ({ identity, user }, ref) {
+  console.log(identity)
+  console.log(user)
   const userID = user.sub
   const userUrl = `${identity.url}/admin/users/${userID}`
   const adminAuthHeader = 'Bearer ' + identity.token
