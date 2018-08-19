@@ -81,7 +81,10 @@ class App extends Component {
             }
             return response.json()
           })
-          .then(data => console.log(data))
+          .then(data => {
+            console.log(data)
+            this.setState({ ...data.data })
+          })
           .catch(e => {
             console.log(e)
           })
