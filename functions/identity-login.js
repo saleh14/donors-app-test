@@ -1,5 +1,6 @@
 import fetch from 'node-fetch'
 import faunadb from 'faunadb' /* Import faunaDB sdk */
+import { SSL_OP_NETSCAPE_CA_DN_BUG } from 'constants'
 
 /* configure faunaDB Client with our secret */
 const q = faunadb.query
@@ -39,9 +40,11 @@ exports.handler = (event, context) => {
       .then(response => {
         console.log(response)
         console.log('data: ', response.data)
-        console.log('data: ', response.ref)
+        console.log('ref: ', response.ref)
+        console.log('ref type: ', typeof response.ref)
         const refID = ''
         try {
+          console.log(response.ref())
           refID = `${response.ref}`.split('/').pop()
           console.log('ref: ', refID)
         } catch (e) {
