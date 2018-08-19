@@ -69,6 +69,22 @@ class App extends Component {
         .catch(e => {
           console.log(e)
         })
+      if (user.app_metadata && user.app_metadata.faunadb_ref) {
+        fetch(`/.netlify/functions/donors-read/${faunadb_ref}`, {
+          headers: { Authorization: myAuthHeader }
+        })
+          .then(response => {
+            if (!response.ok) {
+              console.log('aww, not ok')
+              return
+            }
+            return response.json()
+          })
+          .then(data => console.log(data))
+          .catch(e => {
+            console.log(e)
+          })
+      }
     })
   }
   render () {
