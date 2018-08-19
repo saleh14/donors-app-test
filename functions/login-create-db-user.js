@@ -12,7 +12,7 @@ console.log('before handler function')
 exports.handler = (event, context, callback) => {
   console.log(event)
   console.log(context)
-  const { user } = JSON.parse(context.clientContext)
+  const { user } = context.clientContext
   if (!user) {
     console.log('Error: user is undefined')
     return
