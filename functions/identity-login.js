@@ -40,9 +40,9 @@ exports.handler = (event, context) => {
         console.log(response)
         console.log('data: ', response.data)
         console.log('ref: ', response.ref)
-        console.dir(response.ref)
-        console.dir(response.ref.toString())
-        console.dir(response.ref.toString().match(/[0-9]+/)[0])
+        console.log(JSON.stringify(response.ref, null, 2))
+        console.log(response.ref.toString())
+        console.log(response.ref.toString().match(/[0-9]+/)[0])
         const refID = ''
         try {
           console.log(response.ref())
