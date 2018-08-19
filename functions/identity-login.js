@@ -40,7 +40,7 @@ exports.handler = (event, context) => {
         console.log(response)
         console.log('data: ', response.data)
         console.log('ref: ', response.ref)
-        console.log('ref type: ', typeof response.ref)
+        console.dir(response.ref)
         const refID = ''
         try {
           console.log(response.ref())
