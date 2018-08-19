@@ -36,7 +36,24 @@ class App extends Component {
     setTimeout(() => {
       netlifyIdentity.open()
     }, 1000)
-    netlifyIdentity.on('login', user => console.log(user))
+    netlifyIdentity.on('login', user => {
+      console.log(user)
+      fetch('/.netlify/functions/login-create-db-user', {
+        body: {},
+        method: 'POST'
+      })
+        .then(response => {
+          if (!response.ok) {
+            console.log('aww, not ok')
+            return
+          }
+          return response.json()
+        })
+        .then(data => console.log(data))
+        .catch(e => {
+          console.log(e)
+        })
+    })
   }
   render () {
     return (

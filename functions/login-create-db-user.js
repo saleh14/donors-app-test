@@ -9,7 +9,7 @@ const client = new faunadb.Client({
 
 console.log('before handler function')
 
-exports.handler = (event, context) => {
+exports.handler = (event, context, callback) => {
   const { user } = JSON.parse(event.body)
   if (!user) {
     console.log('Error: user is undefined')
@@ -24,6 +24,7 @@ exports.handler = (event, context) => {
 
   if (faundb_ref) {
     console.log('user is already created in faunadb')
+    callback({ stateCode: 204 })
   } else {
     const { id, email, created_at } = user
     const { full_name } = user.user_metadata
@@ -47,6 +48,16 @@ exports.handler = (event, context) => {
           if (context.clientContext) {
             console.log(JSON.stringify(context.clientContext, null, 2))
             updateUser(context.clientContext, refID)
+              .then(res => {
+                console.log('user is updated: ', res)
+                callback(null, { statusCode: 204 })
+              })
+              .catch(err => {
+                callback(null, {
+                  statusCode: 500,
+                  body: 'Internal Server Error: ' + err
+                })
+              })
           }
         } catch (e) {
           console.log('Error unable to get ref')
@@ -65,12 +76,13 @@ function updateUser ({ identity, user }, ref) {
   const userID = user.sub
   const userUrl = `${identity.url}/admin/users/${userID}`
   const adminAuthHeader = 'Bearer ' + identity.token
+  const updated_app_metadata = { ...user.app_metadata, faundb_ref: ref }
 
   try {
     return fetch(userUrl, {
       method: 'PUT',
       headers: { Authorization: adminAuthHeader },
-      body: JSON.stringify({ app_metadata: { faundb_ref: ref } })
+      body: JSON.stringify({ app_metadata: updated_app_metadata })
     })
       .then(response => {
         return response.json()
