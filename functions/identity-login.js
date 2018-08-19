@@ -39,10 +39,10 @@ exports.handler = (event, context) => {
       .then(response => {
         console.log(response)
         console.log('data: ', response.data)
-        console.log('data: ', response.data)
+        console.log('data: ', response.ref)
         const refID = ''
         try {
-          refID = `${response.data}`.split('/').pop()
+          refID = `${response.ref}`.split('/').pop()
           console.log('ref: ', refID)
         } catch (e) {
           console.log('Error unable to get ref')
