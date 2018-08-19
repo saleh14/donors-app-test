@@ -10,7 +10,7 @@ const client = new faunadb.Client({
 console.log('before handler function')
 
 exports.handler = (event, context, callback) => {
-  const { user } = JSON.parse(event.body)
+  const { user } = JSON.parse(context.clientContext)
   if (!user) {
     console.log('Error: user is undefined')
     return
