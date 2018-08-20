@@ -114,7 +114,7 @@ class App extends Component {
       <div className={appCss}>
         <h1>Hello CodeSandbox</h1>
         <h2>Start editing to see some magic happen!</h2>
-        {!loading &&
+        {!this.state.loading &&
           <Async
             promise={this.fetchUserData()}
             then={fetched => (
