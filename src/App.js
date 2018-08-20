@@ -66,7 +66,7 @@ class App extends Component {
             console.log('aww, not ok')
             return
           }
-          return response.json().data
+          return response.json()
         })
         .then(data => console.log(data))
         .catch(e => {
@@ -83,7 +83,10 @@ class App extends Component {
       console.log(user)
       const myAuthHeader = `Bearer ${user.token.access_token}`
       fetch('/.netlify/functions/login-create-db-user', {
-        headers: { Authorization: myAuthHeader },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: myAuthHeader
+        },
         body: {},
         method: 'POST'
       })
@@ -94,7 +97,10 @@ class App extends Component {
           }
           return response.json()
         })
-        .then(data => console.log(data))
+        .then(data => {
+          console.log(data)
+          this.setState()
+        })
         .catch(e => {
           console.log(e)
         })
