@@ -27,6 +27,12 @@ export default class Form extends React.Component {
   * pass values / handle submition
   *
   */
+  componentDidMount () {
+    const { fetchedField } = this.props
+    if (fetchedField) {
+      this.setState({ ...fetchedField })
+    }
+  }
 
   render () {
     return (
