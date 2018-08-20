@@ -24,7 +24,7 @@ class App extends Component {
   }
 
   fetchUserData () {
-    return this.this.generateHeaders().then(headers => {
+    return this.generateHeaders().then(headers => {
       const user = netlifyIdentity.currentUser()
       if (user) {
         console.log(user)
