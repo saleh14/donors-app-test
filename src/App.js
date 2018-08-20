@@ -86,20 +86,18 @@ class App extends Component {
         headers: {
           'Content-Type': 'application/json',
           Authorization: myAuthHeader
-        },
-        body: {},
-        method: 'POST'
+        }
       })
         .then(response => {
           if (!response.ok) {
             console.log('aww, not ok')
             return
           }
+          this.setState()
           return response.json()
         })
         .then(data => {
           console.log(data)
-          this.setState()
         })
         .catch(e => {
           console.log(e)

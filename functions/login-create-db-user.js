@@ -26,7 +26,7 @@ exports.handler = (event, context, callback) => {
 
   if (faunadb_ref) {
     console.log('user is already created in faunadb')
-    callback(null, { stateCode: 204 })
+    callback(null, { body: { msg: 'success' }, stateCode: 204 })
   } else {
     const { id, email, created_at } = user
     const { full_name } = user.user_metadata
