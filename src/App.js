@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { css } from 'emotion'
 import netlifyIdentity from 'netlify-identity-widget'
+import Async from 'react-promise'
 import Form from './components/Form/'
 
 const appCss = css`
@@ -20,6 +21,36 @@ class App extends Component {
       })
     }
     return Promise.resolve(headers)
+  }
+
+  fetchUserData () {
+    return this.this.generateHeaders().then(headers => {
+      const user = netlifyIdentity.currentUser()
+      if (user) {
+        console.log(user)
+        console.dir(user)
+        if (user.app_metadata) {
+          if (user.app_metadata.faunadb_ref) {
+            const { faunadb_ref } = user.app_metadata
+            return fetch(`/.netlify/functions/donors-read/${faunadb_ref}`, {
+              headers
+            })
+              .then(response => {
+                if (!response.ok) {
+                  console.log('aww, not ok')
+                  return Promise.resolve({})
+                }
+                return response.json()
+              })
+              .catch(e => {
+                console.log(e)
+                return Promise.resolve({})
+              })
+          }
+        }
+      }
+      return Promise.resolve({})
+    })
   }
 
   handleSubmit = (event, fields) => {
@@ -96,7 +127,13 @@ class App extends Component {
       <div className={appCss}>
         <h1>Hello CodeSandbox</h1>
         <h2>Start editing to see some magic happen!</h2>
-        <Form onSubmit={this.handleSubmit} />
+        <Async
+          promise={this.fetchUserData()}
+          then={fetched => (
+            <Form fetchedFields={fetched} onSubmit={this.handleSubmit} />
+          )}
+        />
+
       </div>
     )
   }
