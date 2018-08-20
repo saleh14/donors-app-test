@@ -11,7 +11,7 @@ const appCss = css`
   `
 
 class App extends Component {
-  state = {}
+  state = { loading: false }
 
   generateHeaders () {
     const headers = { 'Content-Type': 'application/json' }
@@ -24,6 +24,7 @@ class App extends Component {
   }
 
   fetchUserData () {
+    this.setState({ loading: true })
     return this.generateHeaders().then(headers => {
       const user = netlifyIdentity.currentUser()
       if (user) {
@@ -34,6 +35,7 @@ class App extends Component {
               headers
             })
               .then(response => {
+                this.setState({ loading: false })
                 if (!response.ok) {
                   console.log('aww, not ok')
                   return Promise.resolve({})
@@ -41,6 +43,7 @@ class App extends Component {
                 return response.json()
               })
               .catch(e => {
+                this.setState({ loading: false })
                 console.log(e)
                 return Promise.resolve({})
               })
@@ -82,6 +85,7 @@ class App extends Component {
     netlifyIdentity.on('login', user => {
       console.log(user)
       const myAuthHeader = `Bearer ${user.token.access_token}`
+      this.setState({ loading: true })
       fetch('/.netlify/functions/login-create-db-user', {
         headers: {
           'Content-Type': 'application/json',
@@ -89,6 +93,7 @@ class App extends Component {
         }
       })
         .then(response => {
+          this.setState({ loading: false })
           if (!response.ok) {
             console.log('aww, not ok')
             return
@@ -109,12 +114,13 @@ class App extends Component {
       <div className={appCss}>
         <h1>Hello CodeSandbox</h1>
         <h2>Start editing to see some magic happen!</h2>
-        <Async
-          promise={this.fetchUserData()}
-          then={fetched => (
-            <Form fetchedFields={fetched} onSubmit={this.handleSubmit} />
-          )}
-        />
+        {!loading &&
+          <Async
+            promise={this.fetchUserData()}
+            then={fetched => (
+              <Form fetchedFields={fetched} onSubmit={this.handleSubmit} />
+            )}
+          />}
 
       </div>
     )
