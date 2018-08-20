@@ -29,8 +29,8 @@ export default class Form extends React.Component {
   */
   componentDidMount () {
     const { fetchedField } = this.props
-    if (fetchedField) {
-      this.setState({ ...fetchedField })
+    if (fetchedField && fetchedField.data) {
+      this.setState({ ...fetchedField.data })
     }
   }
 

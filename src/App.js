@@ -24,29 +24,31 @@ class App extends Component {
   }
 
   fetchUserData () {
-    const user = netlifyIdentity.currentUser()
-    if (user) {
-      if (user.app_metadata && user.app_metadata.faunadb_ref) {
-        const { access_token } = user.token
-        const { faunadb_ref } = user.app_metadata
-        return fetch(`/.netlify/functions/donors-read/${faunadb_ref}`, {
-          headers: { Authorization: `Bearer ${access_token}` }
-        })
-          .then(response => {
-            if (!response.ok) {
-              console.log('aww, not ok')
-              return Promise.resolve({})
-            }
-            return response.json()
-          })
-          .then(data => data.data)
-          .catch(e => {
-            console.log(e)
-            return Promise.resolve({})
-          })
+    return this.generateHeaders().then(headers => {
+      const user = netlifyIdentity.currentUser()
+      if (user) {
+        if (user.app_metadata) {
+          if (user.app_metadata.faunadb_ref) {
+            const { faunadb_ref } = user.app_metadata
+            return fetch(`/.netlify/functions/donors-read/${faunadb_ref}`, {
+              headers
+            })
+              .then(response => {
+                if (!response.ok) {
+                  console.log('aww, not ok')
+                  return Promise.resolve({})
+                }
+                return response.json()
+              })
+              .catch(e => {
+                console.log(e)
+                return Promise.resolve({})
+              })
+          }
+        }
       }
-    }
-    return Promise.resolve({})
+      return Promise.resolve({})
+    })
   }
 
   handleSubmit = (event, fields) => {
