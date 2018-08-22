@@ -75,6 +75,7 @@ class App extends Component {
     })
   }
   componentDidMount () {
+    netlifyIdentity.init()
     setTimeout(() => {
       netlifyIdentity.open()
     }, 1000)
@@ -93,7 +94,6 @@ class App extends Component {
             console.log('aww, not ok')
             return
           }
-          this.forceUpdate()
           return response.json()
         })
         .then(data => {
@@ -102,6 +102,10 @@ class App extends Component {
         .catch(e => {
           console.log(e)
         })
+    })
+
+    netlifyIdentity.on('logout', user => {
+      this.setState({ login: false })
     })
   }
   render () {
@@ -112,7 +116,6 @@ class App extends Component {
         <h2>Start editing to see some magic happen!</h2>
         {login &&
           <Async
-            before={netlifyIdentity.init()}
             promise={this.fetchUserData()}
             then={fetched => (
               <Form fetchedFields={fetched} onSubmit={this.handleSubmit} />
