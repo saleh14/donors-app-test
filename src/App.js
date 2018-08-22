@@ -92,7 +92,7 @@ class App extends Component {
             console.log('aww, not ok')
             return
           }
-          this.setState()
+          this.forceUpdate()
           return response.json()
         })
         .then(data => {
