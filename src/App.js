@@ -11,7 +11,7 @@ const appCss = css`
   `
 
 class App extends Component {
-  state = {}
+  state = { login: false }
 
   generateHeaders () {
     const headers = { 'Content-Type': 'application/json' }
@@ -79,6 +79,7 @@ class App extends Component {
       netlifyIdentity.open()
     }, 1000)
     netlifyIdentity.on('login', user => {
+      this.setState({ login: true })
       console.log(user)
       const myAuthHeader = `Bearer ${user.token.access_token}`
       fetch('/.netlify/functions/login-create-db-user', {
@@ -104,17 +105,19 @@ class App extends Component {
     })
   }
   render () {
+    const { login } = this.state
     return (
       <div className={appCss}>
         <h1>Hello CodeSandbox</h1>
         <h2>Start editing to see some magic happen!</h2>
-        <Async
-          before={netlifyIdentity.init()}
-          promise={this.fetchUserData()}
-          then={fetched => (
-            <Form fetchedFields={fetched} onSubmit={this.handleSubmit} />
-          )}
-        />
+        {login &&
+          <Async
+            before={netlifyIdentity.init()}
+            promise={this.fetchUserData()}
+            then={fetched => (
+              <Form fetchedFields={fetched} onSubmit={this.handleSubmit} />
+            )}
+          />}
 
       </div>
     )
