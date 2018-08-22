@@ -11,7 +11,7 @@ const appCss = css`
   `
 
 class App extends Component {
-  state = { loading: false }
+  state = {}
 
   generateHeaders () {
     const headers = { 'Content-Type': 'application/json' }
@@ -24,34 +24,31 @@ class App extends Component {
   }
 
   fetchUserData () {
-    this.setState({ loading: true })
-    return this.generateHeaders().then(headers => {
-      const user = netlifyIdentity.currentUser()
-      if (user) {
-        if (user.app_metadata) {
-          if (user.app_metadata.faunadb_ref) {
-            const { faunadb_ref } = user.app_metadata
-            return fetch(`/.netlify/functions/donors-read/${faunadb_ref}`, {
-              headers
-            })
-              .then(response => {
-                this.setState({ loading: false })
-                if (!response.ok) {
-                  console.log('aww, not ok')
-                  return Promise.resolve({})
-                }
-                return response.json()
-              })
-              .catch(e => {
-                this.setState({ loading: false })
-                console.log(e)
-                return Promise.resolve({})
-              })
+    const user = netlifyIdentity.currentUser()
+    if (user) {
+      if (user.app_metadata && user.app_metadata.faunadb_ref) {
+        const { faunadb_ref } = user.app_metadata
+        const myAuthHeader = `Bearer ${user.token.access_token}`
+        return fetch(`/.netlify/functions/donors-read/${faunadb_ref}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: myAuthHeader
           }
-        }
+        })
+          .then(response => {
+            if (!response.ok) {
+              console.log('aww, not ok')
+              return Promise.resolve({})
+            }
+            return response.json()
+          })
+          .catch(e => {
+            console.log(e)
+            return Promise.resolve({})
+          })
       }
-      return Promise.resolve({})
-    })
+    }
+    return Promise.resolve({})
   }
 
   handleSubmit = (event, fields) => {
@@ -78,14 +75,12 @@ class App extends Component {
     })
   }
   componentDidMount () {
-    netlifyIdentity.init()
     setTimeout(() => {
       netlifyIdentity.open()
     }, 1000)
     netlifyIdentity.on('login', user => {
       console.log(user)
       const myAuthHeader = `Bearer ${user.token.access_token}`
-      this.setState({ loading: true })
       fetch('/.netlify/functions/login-create-db-user', {
         headers: {
           'Content-Type': 'application/json',
@@ -93,7 +88,6 @@ class App extends Component {
         }
       })
         .then(response => {
-          this.setState({ loading: false })
           if (!response.ok) {
             console.log('aww, not ok')
             return
@@ -114,13 +108,13 @@ class App extends Component {
       <div className={appCss}>
         <h1>Hello CodeSandbox</h1>
         <h2>Start editing to see some magic happen!</h2>
-        {!this.state.loading &&
-          <Async
-            promise={this.fetchUserData()}
-            then={fetched => (
-              <Form fetchedFields={fetched} onSubmit={this.handleSubmit} />
-            )}
-          />}
+        <Async
+          before={netlifyIdentity.init()}
+          promise={this.fetchUserData()}
+          then={fetched => (
+            <Form fetchedFields={fetched} onSubmit={this.handleSubmit} />
+          )}
+        />
 
       </div>
     )
