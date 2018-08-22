@@ -79,6 +79,10 @@ class App extends Component {
     setTimeout(() => {
       netlifyIdentity.open()
     }, 1000)
+    console.log(netlifyIdentity, netlifyIdentity.currentUser())
+    if (netlifyIdentity.currentUser()) {
+      this.setState({ login: true })
+    }
     netlifyIdentity.on('login', user => {
       this.setState({ login: true })
       console.log(user)
