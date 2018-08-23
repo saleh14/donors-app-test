@@ -24,15 +24,9 @@ class App extends Component {
   }
 
   createNewUser () {
-    const user = netlifyIdentity.currentUser()
-    if (user) {
-      console.log(user)
-      const myAuthHeader = `Bearer ${user.token.access_token}`
+    this.generateHeaders().then(headers => {
       fetch('/.netlify/functions/login-create-db-user', {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: myAuthHeader
-        }
+        headers
       })
         .then(response => {
           if (!response.ok) {
@@ -47,7 +41,7 @@ class App extends Component {
         .catch(e => {
           console.log(e)
         })
-    }
+    })
   }
 
   fetchUserData () {
