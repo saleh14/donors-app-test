@@ -26,7 +26,10 @@ exports.handler = (event, context, callback) => {
 
   if (faunadb_ref) {
     console.log('user is already created in faunadb')
-    return callback(null, { body: { msg: 'success' }, stateCode: 204 })
+    return callback(null, {
+      body: JSON.stringify({ msg: 'success' }),
+      stateCode: 204
+    })
   } else {
     const { id, email, created_at } = user
     const { full_name } = user.user_metadata
@@ -50,9 +53,13 @@ exports.handler = (event, context, callback) => {
           if (context.clientContext) {
             console.log(JSON.stringify(context.clientContext, null, 2))
             updateUser(context.clientContext, refID)
-              .then(res => {
-                console.log('user is updated: ', res)
-                return callback(null, { statusCode: 204 })
+              .then(data => {
+                console.log('user is updated: ')
+                console.log(JSON.stringify(data, null, 2))
+                return callback(null, {
+                  body: JSON.stringify(data),
+                  statusCode: 204
+                })
               })
               .catch(err => {
                 callback(null, {
@@ -88,11 +95,6 @@ function updateUser ({ identity, user }, ref) {
     })
       .then(response => {
         return response.json()
-      })
-      .then(data => {
-        console.log('Updated a user! 204!')
-        console.log(JSON.stringify({ data }))
-        return { statusCode: 204 }
       })
       .catch(e => ({ statusCode: 500 }))
   } catch (e) {
