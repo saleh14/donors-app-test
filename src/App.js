@@ -35,7 +35,6 @@ class App extends Component {
             console.log('aww, not ok')
             return
           }
-          netlifyIdentity.init()
           try {
             return response.json()
           } catch (e) {
