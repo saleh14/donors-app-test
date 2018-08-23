@@ -46,11 +46,10 @@ class App extends Component {
         .then(data => {
           if (data) {
             console.log(data)
-            const identityObj = JSON.parse(data)
-            if (identityObj.app_metadata) {
+            if (data.app_metadata) {
               const localStorageRef = localStorage.getItem('gotrue.user')
               if (localStorageRef) {
-                localStorage.setItem('gotrue.user', JSON.stringify(identityObj))
+                localStorage.setItem('gotrue.user', JSON.stringify(data))
               }
             }
           }
