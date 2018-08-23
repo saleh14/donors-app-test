@@ -129,7 +129,7 @@ class App extends Component {
         <h2>Start editing to see some magic happen!</h2>
         {login &&
           <div>
-            <Async promise={this.this.createNewUser()} />
+            <Async promise={this.createNewUser()} />
             <Async
               promise={this.fetchUserData()}
               then={fetched => (
