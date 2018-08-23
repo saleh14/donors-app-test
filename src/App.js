@@ -23,6 +23,33 @@ class App extends Component {
     return Promise.resolve(headers)
   }
 
+  createNewUser () {
+    const user = netlifyIdentity.currentUser()
+    if (user) {
+      console.log(user)
+      const myAuthHeader = `Bearer ${user.token.access_token}`
+      fetch('/.netlify/functions/login-create-db-user', {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: myAuthHeader
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            console.log('aww, not ok')
+            return
+          }
+          return response.json()
+        })
+        .then(data => {
+          console.log(data)
+        })
+        .catch(e => {
+          console.log(e)
+        })
+    }
+  }
+
   fetchUserData () {
     const user = netlifyIdentity.currentUser()
     if (user) {
@@ -79,33 +106,15 @@ class App extends Component {
     setTimeout(() => {
       netlifyIdentity.open()
     }, 1000)
+
     console.log(netlifyIdentity, netlifyIdentity.currentUser())
+
     if (netlifyIdentity.currentUser()) {
       this.setState({ login: true })
     }
+
     netlifyIdentity.on('login', user => {
       this.setState({ login: true })
-      console.log(user)
-      const myAuthHeader = `Bearer ${user.token.access_token}`
-      fetch('/.netlify/functions/login-create-db-user', {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: myAuthHeader
-        }
-      })
-        .then(response => {
-          if (!response.ok) {
-            console.log('aww, not ok')
-            return
-          }
-          return response.json()
-        })
-        .then(data => {
-          console.log(data)
-        })
-        .catch(e => {
-          console.log(e)
-        })
     })
 
     netlifyIdentity.on('logout', user => {
@@ -119,12 +128,15 @@ class App extends Component {
         <h1>Hello CodeSandbox</h1>
         <h2>Start editing to see some magic happen!</h2>
         {login &&
-          <Async
-            promise={this.fetchUserData()}
-            then={fetched => (
-              <Form fetchedFields={fetched} onSubmit={this.handleSubmit} />
-            )}
-          />}
+          <div>
+            <Async promise={this.this.createNewUser()} />
+            <Async
+              promise={this.fetchUserData()}
+              then={fetched => (
+                <Form fetchedFields={fetched} onSubmit={this.handleSubmit} />
+              )}
+            />
+          </div>}
 
       </div>
     )
