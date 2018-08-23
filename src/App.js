@@ -47,7 +47,10 @@ class App extends Component {
             console.log(data)
             if (data.app_metadata) {
               const user = netlifyIdentity.currentUser()
-              user.getUserData().then(user => console.log(user))
+              user.getUserData().then(user => {
+                console.log(user)
+                netlifyIdentity.init()
+              })
               // const localStorageRef = localStorage.getItem('gotrue.user')
               // if (localStorageRef) {
               //   localStorage.setItem('gotrue.user', JSON.stringify(data))

@@ -22,17 +22,7 @@ exports.handler = (event, context, callback) => {
     return callback(null, { statusCode: 412, body: 'already created' })
   }
 
-  console.log(user.getUserData)
-  try {
-    user.getUserData().then(user => {
-      console.log('user after update: ')
-      console.log(user)
-    })
-  } catch (e) {
-    console.log('error: ')
-    console.log(e)
-  }
-
+  console.log(user.app_metadata)
   const { faunadb_ref } = user.app_metadata
   console.log('checking faunadb_Ref: ', faunadb_ref)
 
