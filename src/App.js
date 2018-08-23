@@ -29,14 +29,19 @@ class App extends Component {
         headers
       })
         .then(response => {
+          console.log(response)
+          console.dir(response)
           if (!response.ok) {
             console.log('aww, not ok')
             return
           }
+          netlifyIdentity.init()
           return response.json()
         })
         .then(data => {
-          console.log(data)
+          if (data) {
+            console.log(data)
+          }
         })
         .catch(e => {
           console.log(e)
