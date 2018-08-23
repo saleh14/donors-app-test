@@ -19,17 +19,15 @@ exports.handler = (event, context, callback) => {
   }
   if (!user.app_metadata) {
     console.log('Error: user.app_metadata is undefined')
-    return
+    return callback(null, { statusCode: 412, body: 'already created' })
   }
 
   const { faunadb_ref } = user.app_metadata
+  console.log('checking faunadb_Ref: ', faunadb_ref)
 
   if (faunadb_ref) {
     console.log('user is already created in faunadb')
-    return callback(null, {
-      body: JSON.stringify({ msg: 'success' }),
-      stateCode: 204
-    })
+    return callback(null, { statusCode: 412, body: 'already created' })
   } else {
     const { id, email, created_at } = user
     const { full_name } = user.user_metadata
@@ -87,19 +85,18 @@ function updateUser ({ identity, user }, ref) {
   const adminAuthHeader = 'Bearer ' + identity.token
   const updated_app_metadata = { ...user.app_metadata, faunadb_ref: ref }
 
-  try {
-    return fetch(userUrl, {
-      method: 'PUT',
-      headers: { Authorization: adminAuthHeader },
-      body: JSON.stringify({ app_metadata: updated_app_metadata })
+  return fetch(userUrl, {
+    method: 'PUT',
+    headers: {
+      Authorization: adminAuthHeader,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ app_metadata: updated_app_metadata })
+  })
+    .then(response => {
+      return response.json()
     })
-      .then(response => {
-        return response.json()
-      })
-      .catch(e => ({ statusCode: 500 }))
-  } catch (e) {
-    return e
-  }
+    .catch(e => ({ statusCode: 500 }))
 }
 /*
 const body = {
