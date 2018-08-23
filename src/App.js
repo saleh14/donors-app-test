@@ -46,10 +46,12 @@ class App extends Component {
           if (data) {
             console.log(data)
             if (data.app_metadata) {
-              const localStorageRef = localStorage.getItem('gotrue.user')
-              if (localStorageRef) {
-                localStorage.setItem('gotrue.user', JSON.stringify(data))
-              }
+              const user = netlifyIdentity.currentUser()
+              user.update({ app_metadata: data.app_metadata })
+              // const localStorageRef = localStorage.getItem('gotrue.user')
+              // if (localStorageRef) {
+              //   localStorage.setItem('gotrue.user', JSON.stringify(data))
+              // }
             }
           }
         })
