@@ -55,8 +55,11 @@ exports.handler = (event, context, callback) => {
                 console.log('user is updated: ')
                 console.log(JSON.stringify(data, null, 2))
                 return callback(null, {
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
                   body: JSON.stringify(data),
-                  statusCode: 204
+                  statusCode: 200
                 })
               })
               .catch(err => {

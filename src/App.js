@@ -36,7 +36,12 @@ class App extends Component {
             return
           }
           netlifyIdentity.init()
-          return response.json()
+          try {
+            return response.json()
+          } catch (e) {
+            console.log(e)
+            return response.text()
+          }
         })
         .then(data => {
           if (data) {
