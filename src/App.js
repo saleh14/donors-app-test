@@ -49,7 +49,7 @@ class App extends Component {
               const user = netlifyIdentity.currentUser()
               user.getUserData().then(user => {
                 console.log(user)
-                netlifyIdentity.init()
+                user.clearSession()
               })
               // const localStorageRef = localStorage.getItem('gotrue.user')
               // if (localStorageRef) {
