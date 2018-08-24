@@ -46,16 +46,12 @@ class App extends Component {
           if (data) {
             console.log(data)
             if (data.app_metadata) {
-              const user = netlifyIdentity.currentUser()
-              user.getUserData().then(user => {
-                console.log(user)
-                user.clearSession()
-              })
-              // const localStorageRef = localStorage.getItem('gotrue.user')
-              // if (localStorageRef) {
-              //   localStorage.setItem('gotrue.user', JSON.stringify(data))
-              // }
+              setTimeout(() => netlifyIdentity.logout(), 500)
             }
+            // const localStorageRef = localStorage.getItem('gotrue.user')
+            // if (localStorageRef) {
+            //   localStorage.setItem('gotrue.user', JSON.stringify(data))
+            // }
           }
         })
         .catch(e => {
