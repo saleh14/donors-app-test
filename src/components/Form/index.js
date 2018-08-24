@@ -3,16 +3,23 @@ import TextFields from './TextFields'
 import { css } from 'emotion'
 
 export default class Form extends React.Component {
-  state = {
-    roles: '',
-    fullName: '',
-    nationalID: '',
-    gender: '',
-    address: '',
-    postalBox: '',
-    postalCode: '',
-    email: '',
-    contactNumber: ''
+  constructor (props) {
+    const state = {
+      roles: '',
+      fullName: '',
+      nationalID: '',
+      gender: '',
+      address: '',
+      postalBox: '',
+      postalCode: '',
+      email: '',
+      contactNumber: ''
+    }
+    const { fetchedFields } = props
+    console.log(fetchedFields)
+    if (fetchedFields && fetchedFields.data) {
+      this.state({ ...state, ...fetchedFields.data })
+    }
   }
 
   handleChange = event => {
@@ -27,13 +34,6 @@ export default class Form extends React.Component {
   * pass values / handle submition
   *
   */
-  componentWillMount () {
-    const { fetchedFields } = this.props
-    console.log(fetchedFields)
-    if (fetchedFields && fetchedFields.data) {
-      this.setState({ ...fetchedFields.data })
-    }
-  }
 
   render () {
     return (
