@@ -19,7 +19,10 @@ exports.handler = (event, context, callback) => {
   }
   if (!user.app_metadata) {
     console.log('Error: user.app_metadata is undefined')
-    return callback(null, { statusCode: 412, body: 'already created' })
+    return callback(null, {
+      statusCode: 412,
+      body: '{message: "Undefined app_data"}'
+    })
   }
 
   console.log(user.app_metadata)
@@ -28,7 +31,10 @@ exports.handler = (event, context, callback) => {
 
   if (faunadb_ref) {
     console.log('user is already created in faunadb')
-    return callback(null, { statusCode: 412, body: 'already created' })
+    return callback(null, {
+      statusCode: 412,
+      body: '{message: "already created"}'
+    })
   } else {
     const { id, email, created_at } = user
     const { full_name } = user.user_metadata
