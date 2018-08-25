@@ -4,6 +4,7 @@ import { css } from 'emotion'
 
 export default class Form extends React.Component {
   constructor (props) {
+    super(props)
     const state = {
       roles: '',
       fullName: '',
@@ -18,7 +19,7 @@ export default class Form extends React.Component {
     const { fetchedFields } = props
     console.log(fetchedFields)
     if (fetchedFields && fetchedFields.data) {
-      this.state({ ...state, ...fetchedFields.data })
+      this.state = { ...state, ...fetchedFields.data }
     }
   }
 
