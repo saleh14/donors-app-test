@@ -20,6 +20,8 @@ export default class Form extends React.Component {
     console.log(fetchedFields)
     if (fetchedFields && fetchedFields.data) {
       this.state = { ...state, ...fetchedFields.data }
+    } else {
+      this.state = state
     }
   }
 

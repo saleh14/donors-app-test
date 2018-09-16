@@ -9,14 +9,41 @@ const client = new faunadb.Client({
 
 console.log('before handler function')
 
-exports.handler = (event, context, callback) => {
+exports.handler = (
+  event,
+  {
+    clientContext = {
+      identity: {
+        url: 'https://ecstatic-swanson-5d844f.netlify.com/.netlify/identity',
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1MzYyNDE0MTksInN1YiI6IjAifQ.tvkasN5Uv5tzFnyErIvb0TpC8axp7LyhH9sYJH44rOc'
+      },
+      user: {
+        app_metadata: {
+          faunadb_ref: '208067187009651204',
+          faundb_ref: '208061570072183299',
+          provider: 'email'
+        },
+        email: 'saleh.mearaj@gmail.com',
+        exp: 1536244958,
+        sub: '386fe9f6-ee3f-457d-bd5a-64c9c4cca28c',
+        user_metadata: { full_name: 'saleh ali' }
+      },
+      invokeid: 'b88a7aa3-b1da-11e8-8803-33c367bee89e',
+      awsRequestId: 'b88a7aa3-b1da-11e8-8803-33c367bee89e',
+      invokedFunctionArn: 'arn:aws:lambda:us-east-1:812122390002:function:001fd41cfb82fdefc10aef3e212f8014c591a949f7972a0632af7acd0603caba'
+    }
+  },
+  callback
+) => {
   console.log(event)
-  console.log(context)
-  const { user } = context.clientContext
-  if (!user) {
+  if (!clientContext) {
     console.log('Error: user is undefined')
-    return
+    return callback(null, {
+      statusCode: 412,
+      body: '{message: "Undefined clientContext}'
+    })
   }
+  const { user } = clientContext
   if (!user.app_metadata) {
     console.log('Error: user.app_metadata is undefined')
     return callback(null, {
@@ -55,9 +82,9 @@ exports.handler = (event, context, callback) => {
         try {
           const refID = `${response.ref}`.split('/').pop()
           console.log(refID)
-          if (context.clientContext) {
-            console.log(JSON.stringify(context.clientContext, null, 2))
-            updateUser(context.clientContext, refID)
+          if (clientContext) {
+            console.log(JSON.stringify(clientContext, null, 2))
+            updateUser(clientContext, refID)
               .then(data => {
                 console.log('user is updated: ')
                 console.log(JSON.stringify(data, null, 2))
